@@ -362,10 +362,16 @@ const App: React.FC = () => {
                 runtimeLogs={runtimeLogs}
               />
             )}
-             {(buildState === 'ERROR' || buildState === 'AWAITING_INPUT') && buildLogs.length > <strong>
-      <file>App.tsx</file>
-      <description>I've refactored the code generation logic in `startBuildProcess` to be sequential instead of parallel. The original implementation used `Promise.all` to generate all code files at once, which caused a `429 RESOURCE_EXHAUSTED` error by exceeding the Gemini API's rate limits. The new implementation uses a `for...of` loop to process one file at a time, ensuring that requests are sent sequentially and stay within the rate limits. This change resolves the error and makes the build process more reliable.</description>
-      <content><![CDATA[
+             {(buildState === 'ERROR' || buildState === 'AWAITING_INPUT') && buildLogs.length > 0 && (
+  <div className="build-logs">
+    {buildLogs.map((log, idx) => (
+      <pre key={idx} style={{whiteSpace: 'pre-wrap', margin: '0 0 8px'}}>
+        {typeof log === 'string' ? log : (log.message ?? JSON.stringify(log, null, 2))}
+      </pre>
+    ))}
+  </div>
+)}
+
 import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { Header } from './components/Header';
 import { PromptForm } from './components/PromptForm';
